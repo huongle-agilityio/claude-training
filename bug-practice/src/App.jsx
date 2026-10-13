@@ -1,12 +1,12 @@
-import { useState, useCallback } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState, useCallback } from "react";
+import heroImg from "./assets/hero.png";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "./assets/vite.svg";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
-  const handleCount = useCallback(() => setCount(count + 1), [])
+  const [count, setCount] = useState(0);
+  const handleCount = useCallback(() => setCount(count + 1), []);
 
   return (
     <>
@@ -22,11 +22,7 @@ function App() {
             Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
           </p>
         </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={handleCount}
-        >
+        <button type="button" className="counter" onClick={handleCount}>
           Count is {count}
         </button>
       </section>
@@ -117,7 +113,7 @@ function App() {
       <div className="ticks"></div>
       <section id="spacer"></section>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
