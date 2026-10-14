@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import heroImg from "./assets/hero.png";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "./assets/vite.svg";
@@ -6,7 +6,19 @@ import "./App.css";
 
 function App() {
   const [count, setCount] = useState(0);
-  const handleCount = useCallback(() => setCount(count + 1), []);
+  const [message, setMessage] = useState("");
+  const handleCount = useCallback(
+    () => setCount((prevCount) => prevCount + 1),
+    [],
+  );
+
+  useEffect(() => {
+    if (count === 0) return;
+    const timer = setTimeout(() => {
+      setMessage(`You clicked ${count} time${count !== 1 ? "s" : ""}`);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [count]);
 
   return (
     <>
@@ -25,6 +37,7 @@ function App() {
         <button type="button" className="counter" onClick={handleCount}>
           Count is {count}
         </button>
+        {message && <p>{message}</p>}
       </section>
 
       <div className="ticks"></div>
