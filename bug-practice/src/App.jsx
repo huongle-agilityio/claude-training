@@ -1,24 +1,21 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback } from "react";
 import heroImg from "./assets/hero.png";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "./assets/vite.svg";
+import { useClickMessage } from "./hooks/useClickMessage";
+import { ClickHistory } from "./components/ClickHistory";
 import "./App.css";
 
 function App() {
   const [count, setCount] = useState(0);
-  const [message, setMessage] = useState("");
+  const [screen, setScreen] = useState("counter");
+
+  const message = useClickMessage(count);
+
   const handleCount = useCallback(
-    () => setCount((prevCount) => prevCount + 1),
+    () => setCount((prev) => prev + 1),
     [],
   );
-
-  useEffect(() => {
-    if (count === 0) return;
-    const timer = setTimeout(() => {
-      setMessage(`You clicked ${count} time${count !== 1 ? "s" : ""}`);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, [count]);
 
   return (
     <>
@@ -28,16 +25,40 @@ function App() {
           <img src={reactLogo} className="framework" alt="React logo" />
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
+
+        <div className="tabs">
+          <button
+            type="button"
+            className={`tab${screen === "counter" ? " active" : ""}`}
+            onClick={() => setScreen("counter")}
+          >
+            Counter
+          </button>
+          <button
+            type="button"
+            className={`tab${screen === "history" ? " active" : ""}`}
+            onClick={() => setScreen("history")}
+          >
+            History
+          </button>
         </div>
-        <button type="button" className="counter" onClick={handleCount}>
-          Count is {count}
-        </button>
-        {message && <p>{message}</p>}
+
+        {screen === "counter" && (
+          <>
+            <div>
+              <h1>Get started</h1>
+              <p>
+                Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
+              </p>
+            </div>
+            <button type="button" className="counter" onClick={handleCount}>
+              Count is {count}
+            </button>
+            {message && <p>{message}</p>}
+          </>
+        )}
+
+        {screen === "history" && <ClickHistory />}
       </section>
 
       <div className="ticks"></div>
