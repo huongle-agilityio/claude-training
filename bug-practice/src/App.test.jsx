@@ -132,3 +132,11 @@ test("Back to Home link returns to the home page", async () => {
   expect(screen.getByRole("button", { name: /count is/i })).not.toBeNull();
   expect(screen.queryByRole("heading", { name: /sortable list/i })).toBeNull();
 });
+
+test("Clicking the count button plays the santa animation", async () => {
+  renderApp();
+  expect(screen.queryByTestId("santa-run")).toBeNull();
+
+  await userEvent.click(screen.getByRole("button", { name: /count is/i }));
+  expect(screen.queryByTestId("santa-run")).not.toBeNull();
+});

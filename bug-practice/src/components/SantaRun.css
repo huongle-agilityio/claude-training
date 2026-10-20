@@ -1,0 +1,85 @@
+.santa-run {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 24px;
+  height: 64px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.santa-run__runner {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  white-space: nowrap;
+  animation: santa-run-across 3s linear forwards;
+}
+
+.santa-run__santa {
+  font-size: 40px;
+  line-height: 1;
+  display: inline-block;
+  animation: santa-run-bounce 0.3s ease-in-out infinite alternate;
+}
+
+.santa-run__present {
+  font-size: 24px;
+  line-height: 1;
+  display: inline-block;
+  animation: santa-run-bounce 0.3s ease-in-out 0.15s infinite alternate;
+}
+
+.santa-run__trail {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.santa-run__sparkle {
+  font-size: 16px;
+  display: inline-block;
+  animation: santa-run-twinkle 0.6s ease-in-out infinite;
+}
+
+@keyframes santa-run-across {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100vw);
+  }
+}
+
+@keyframes santa-run-bounce {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes santa-run-twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.6) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2) rotate(20deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .santa-run__santa,
+  .santa-run__present,
+  .santa-run__sparkle {
+    animation: none;
+  }
+}
