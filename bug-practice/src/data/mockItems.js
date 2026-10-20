@@ -29,4 +29,14 @@ export const MOCK_ITEMS = [
     title: "Ship it",
     description: "Open a merge request and get it reviewed.",
   },
+  {
+    id: "item-7",
+    title: "Gather feedback",
+    description: "Collect comments from users and reviewers after release.",
+  },
+  {
+    id: "item-8",
+    title: "Plan next steps",
+    description: "Turn feedback into tickets for the next iteration.",
+  },
 ];
