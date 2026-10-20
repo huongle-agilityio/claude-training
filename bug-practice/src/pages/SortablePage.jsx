@@ -1,4 +1,6 @@
 import { Link } from "react-router";
+import { SortableList } from "../components/SortableList";
+import { MOCK_ITEMS } from "../data/mockItems";
 import { ROUTES } from "../constants/routes";
 
 export const SortablePage = () => (
@@ -8,5 +10,6 @@ export const SortablePage = () => (
     </Link>
     <h1>Sortable List</h1>
     <p>Drag an item to change its order.</p>
+    <SortableList initialItems={MOCK_ITEMS} />
   </section>
 );
