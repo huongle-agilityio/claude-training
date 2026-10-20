@@ -1,4 +1,8 @@
 .sortable-list {
+  --item-bg: var(--accent);
+  --item-text: #fff;
+  --item-over-border: var(--text-h);
+
   position: relative;
   list-style: none;
   padding: 0;
@@ -17,7 +21,8 @@
   padding: 12px 16px;
   border-radius: 8px;
   border: 2px solid transparent;
-  background: var(--social-bg);
+  background: var(--item-bg);
+  color: var(--item-text);
   text-align: left;
   cursor: grab;
   user-select: none;
@@ -38,13 +43,13 @@
   }
 
   &.drag-over {
-    border-color: var(--accent-border);
+    border-color: var(--item-over-border);
   }
 
   h3 {
     margin: 0 0 4px;
     font-size: 16px;
-    color: var(--text-h);
+    color: inherit;
   }
 
   p {
@@ -67,8 +72,15 @@
   }
 }
 
+/* The dark-theme accent is a light purple, so white text would be too faint */
+@media (prefers-color-scheme: dark) {
+  .sortable-list {
+    --item-text: var(--bg);
+  }
+}
+
 .drag-handle {
-  color: var(--text);
-  opacity: 0.6;
+  color: inherit;
+  opacity: 0.7;
   line-height: 1.4;
 }
