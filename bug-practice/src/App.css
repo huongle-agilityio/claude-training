@@ -161,6 +161,63 @@
   }
 }
 
+.tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.tab {
+  padding: 6px 20px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-h);
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s, border-color 0.2s;
+
+  &:hover {
+    background: var(--social-bg);
+  }
+
+  &.active {
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-color: var(--accent-border);
+  }
+}
+
+.history-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 360px;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    margin: 0;
+  }
+
+  li {
+    padding: 8px 12px;
+    border-radius: 6px;
+    background: var(--social-bg);
+    margin-bottom: 4px;
+    font-size: 14px;
+    text-align: left;
+  }
+
+  .empty {
+    color: var(--text);
+    opacity: 0.6;
+    font-size: 14px;
+  }
+}
+
 .ticks {
   position: relative;
   width: 100%;
