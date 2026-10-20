@@ -7,7 +7,16 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { test, expect, vi, afterEach } from "vitest";
+import { MemoryRouter } from "react-router";
 import App from "./App";
+import { ROUTES } from "./constants/routes";
+
+const renderApp = (path = ROUTES.HOME) =>
+  render(
+    <MemoryRouter initialEntries={[path]}>
+      <App />
+    </MemoryRouter>,
+  );
 
 afterEach(() => {
   cleanup();
@@ -15,7 +24,7 @@ afterEach(() => {
 });
 
 test("Clicking the button increases count = 2 ", async () => {
-  render(<App />);
+  renderApp();
   const button = screen.getByRole("button", { name: /count is/i });
   await userEvent.click(button);
   await userEvent.click(button);
@@ -25,7 +34,7 @@ test("Clicking the button increases count = 2 ", async () => {
 test("Clicking the button once shows message after 2 seconds", async () => {
   vi.useFakeTimers();
 
-  render(<App />);
+  renderApp();
 
   const button = screen.getByRole("button", { name: /count is/i });
 
@@ -45,13 +54,13 @@ test("Clicking the button once shows message after 2 seconds", async () => {
 });
 
 test("Reset button is disabled when count is 0", () => {
-  render(<App />);
+  renderApp();
   const reset = screen.getByRole("button", { name: /reset/i });
   expect(reset.disabled).toBe(true);
 });
 
 test("Clicking Reset sets count back to 0", async () => {
-  render(<App />);
+  renderApp();
   const button = screen.getByRole("button", { name: /count is/i });
   const reset = screen.getByRole("button", { name: /reset/i });
 
@@ -71,7 +80,7 @@ test("Clicking Reset hides the click message", async () => {
     advanceTimers: vi.advanceTimersByTime.bind(vi),
   });
 
-  render(<App />);
+  renderApp();
 
   await user.click(screen.getByRole("button", { name: /count is/i }));
   await act(async () => {
@@ -88,7 +97,7 @@ test("Clicking Reset hides the click message", async () => {
 test("Clicking the button twice shows message with plural 'times'", async () => {
   vi.useFakeTimers();
 
-  render(<App />);
+  renderApp();
 
   const button = screen.getByRole("button", { name: /count is/i });
 
@@ -106,4 +115,20 @@ test("Clicking the button twice shows message with plural 'times'", async () => 
   expect(message).not.toBeNull();
 
   vi.useRealTimers();
+});
+
+test("Go to Sortable List link opens the sortable page", async () => {
+  renderApp();
+  await userEvent.click(
+    screen.getByRole("link", { name: /go to sortable list/i }),
+  );
+  expect(screen.getByRole("heading", { name: /sortable list/i })).not.toBeNull();
+  expect(screen.queryByRole("button", { name: /count is/i })).toBeNull();
+});
+
+test("Back to Home link returns to the home page", async () => {
+  renderApp(ROUTES.SORTABLE);
+  await userEvent.click(screen.getByRole("link", { name: /back to home/i }));
+  expect(screen.getByRole("button", { name: /count is/i })).not.toBeNull();
+  expect(screen.queryByRole("heading", { name: /sortable list/i })).toBeNull();
 });

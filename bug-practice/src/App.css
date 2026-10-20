@@ -239,3 +239,8 @@
     border-right-color: var(--border);
   }
 }
+
+.nav-link {
+  display: inline-block;
+  text-decoration: none;
+}
