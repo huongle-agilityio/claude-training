@@ -11,5 +11,6 @@ export function useClickMessage(count) {
     return () => clearTimeout(timer);
   }, [count]);
 
-  return message;
+  // Hide any stale message once the counter is reset to 0
+  return count === 0 ? "" : message;
 }

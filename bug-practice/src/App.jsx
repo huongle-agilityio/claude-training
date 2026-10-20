@@ -17,6 +17,8 @@ function App() {
     [],
   );
 
+  const handleReset = useCallback(() => setCount(0), []);
+
   return (
     <>
       <section id="center">
@@ -53,6 +55,14 @@ function App() {
             </div>
             <button type="button" className="counter" onClick={handleCount}>
               Count is {count}
+            </button>
+            <button
+              type="button"
+              className="counter"
+              onClick={handleReset}
+              disabled={count === 0}
+            >
+              Reset
             </button>
             {message && <p>{message}</p>}
           </>

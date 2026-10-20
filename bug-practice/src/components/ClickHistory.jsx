@@ -4,8 +4,7 @@ export function ClickHistory() {
   const [history, setHistory] = useState([]);
 
   const handleRecord = () => {
-    history.push(new Date().toLocaleTimeString());
-    setHistory(history);
+    setHistory(prev => [...prev, new Date().toLocaleTimeString()]);
   };
 
   return (
