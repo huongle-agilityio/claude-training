@@ -4,6 +4,7 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "./assets/vite.svg";
 import { useClickMessage } from "./hooks/useClickMessage";
 import { ClickHistory } from "./components/ClickHistory";
+import { SantaRun } from "./components/SantaRun";
 import "./App.css";
 
 function App() {
@@ -65,6 +66,7 @@ function App() {
               Reset
             </button>
             {message && <p>{message}</p>}
+            <SantaRun runId={count} />
           </>
         )}
 

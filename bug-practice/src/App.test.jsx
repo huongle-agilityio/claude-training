@@ -107,3 +107,11 @@ test("Clicking the button twice shows message with plural 'times'", async () => 
 
   vi.useRealTimers();
 });
+
+test("Clicking the count button plays the santa animation", async () => {
+  render(<App />);
+  expect(screen.queryByTestId("santa-run")).toBeNull();
+
+  await userEvent.click(screen.getByRole("button", { name: /count is/i }));
+  expect(screen.queryByTestId("santa-run")).not.toBeNull();
+});
