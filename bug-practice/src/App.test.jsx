@@ -1,4 +1,10 @@
-import { render, screen, act, cleanup } from "@testing-library/react";
+import {
+  render,
+  screen,
+  act,
+  cleanup,
+  fireEvent,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { test, expect, vi, afterEach } from "vitest";
 import App from "./App";
@@ -18,14 +24,14 @@ test("Clicking the button increases count = 2 ", async () => {
 
 test("Clicking the button once shows message after 2 seconds", async () => {
   vi.useFakeTimers();
-  const user = userEvent.setup({
-    advanceTimers: vi.advanceTimersByTime.bind(vi),
-  });
 
   render(<App />);
 
   const button = screen.getByRole("button", { name: /count is/i });
-  await user.click(button);
+
+  await act(async () => {
+    fireEvent.click(button);
+  });
 
   await act(async () => {
     vi.advanceTimersByTime(2000);
@@ -75,6 +81,29 @@ test("Clicking Reset hides the click message", async () => {
 
   await user.click(screen.getByRole("button", { name: /reset/i }));
   expect(screen.queryByText(/you clicked/i)).toBeNull();
+
+  vi.useRealTimers();
+});
+
+test("Clicking the button twice shows message with plural 'times'", async () => {
+  vi.useFakeTimers();
+
+  render(<App />);
+
+  const button = screen.getByRole("button", { name: /count is/i });
+
+  await act(async () => {
+    fireEvent.click(button);
+    fireEvent.click(button);
+  });
+
+  await act(async () => {
+    vi.advanceTimersByTime(2000);
+  });
+
+  // Expected: "You clicked 2 times" (plural) appears in DOM
+  const message = screen.queryByText("You clicked 2 times");
+  expect(message).not.toBeNull();
 
   vi.useRealTimers();
 });
