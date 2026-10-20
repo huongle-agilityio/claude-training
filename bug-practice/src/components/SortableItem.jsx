@@ -1,5 +1,9 @@
+const FADE_IN_STAGGER_MS = 50;
+
 export const SortableItem = ({
   item,
+  index,
+  itemRef,
   isDragging,
   isOver,
   onDragStart,
@@ -36,7 +40,9 @@ export const SortableItem = ({
 
   return (
     <li
+      ref={itemRef}
       className={className}
+      style={{ animationDelay: `${index * FADE_IN_STAGGER_MS}ms` }}
       draggable
       aria-grabbed={isDragging}
       onDragStart={handleDragStart}

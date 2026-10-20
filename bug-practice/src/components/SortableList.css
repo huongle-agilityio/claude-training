@@ -21,7 +21,9 @@
   text-align: left;
   cursor: grab;
   user-select: none;
+  animation: sortable-fade-in 300ms ease backwards;
   transition:
+    transform 300ms ease,
     opacity 200ms ease,
     border-color 200ms ease,
     box-shadow 200ms ease;
@@ -48,6 +50,20 @@
   p {
     margin: 0;
     font-size: 14px;
+  }
+}
+
+@keyframes sortable-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sortable-item {
+    animation: none;
+    transition: none;
   }
 }
 
