@@ -1,3 +1,5 @@
+<!-- cspell:words asoft huong glab -->
+
 # PR review loop
 
 Start with `/loop 10m` (bare `/loop` uses these instructions; the interval comes from the command).
