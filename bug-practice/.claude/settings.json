@@ -9,7 +9,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "f=$(jq -r '.tool_input.file_path'); npx eslint --fix --no-warn-ignored \"$f\""
+            "command": "f=$(jq -r '.tool_input.file_path'); case \"$f\" in *.js|*.jsx) cd \"$CLAUDE_PROJECT_DIR\" && npx --no -- eslint --fix --no-warn-ignored \"$f\" 1>&2 || exit 2 ;; esac"
           }
         ]
       }
