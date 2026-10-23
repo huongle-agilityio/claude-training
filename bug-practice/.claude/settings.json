@@ -1,0 +1,29 @@
+{
+  "enabledPlugins": {
+    "typescript-lsp@claude-plugins-official": true
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_input.file_path'); case \"$f\" in *.js|*.jsx) cd \"$CLAUDE_PROJECT_DIR\" && npx --no -- eslint --fix --no-warn-ignored \"$f\" 1>&2 || exit 2 ;; esac"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/block-forbidden.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}
