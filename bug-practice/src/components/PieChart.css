@@ -48,6 +48,12 @@
   text-align: left;
 }
 
+.pie-chart-empty {
+  margin: 0;
+  color: var(--text);
+  font-style: italic;
+}
+
 .pie-chart-value {
   font-family: var(--mono);
   font-variant-numeric: tabular-nums;

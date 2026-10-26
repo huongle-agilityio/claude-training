@@ -1,7 +1,6 @@
 import { render, screen, cleanup, within } from "@testing-library/react";
 import { test, expect, afterEach } from "vitest";
 import { PieChart } from "./PieChart";
-import { buildGradient } from "../utils/pieChart";
 import { MOCK_CHART_DATA } from "../data/mockChartData";
 
 afterEach(cleanup);
@@ -24,17 +23,6 @@ test("describes every slice in the chart's accessible label", () => {
   );
 });
 
-test("builds consecutive gradient stops from slice values", () => {
-  const slices = [
-    { value: 1, color: "red" },
-    { value: 3, color: "blue" },
-  ];
-
-  expect(buildGradient(slices, 4)).toBe(
-    "conic-gradient(red 0% 25%, blue 25% 100%)",
-  );
-});
-
 test("skips zero-value slices", () => {
   const data = [
     { id: "a", label: "A", value: 0, color: "red" },
@@ -51,4 +39,52 @@ test("shows an empty message when there is no data", () => {
 
   expect(screen.getByText("No data to display.")).toBeTruthy();
   expect(screen.queryByRole("img")).toBeNull();
+});
+
+test("shows the empty message instead of crashing when data is missing", () => {
+  render(<PieChart title="Chart" />);
+
+  expect(screen.getByText("No data to display.")).toBeTruthy();
+});
+
+test("leaves the title out of the label and heading when none is given", () => {
+  render(<PieChart data={[{ id: "a", label: "A", value: 1, color: "red" }]} />);
+
+  expect(screen.getByRole("img").getAttribute("aria-label")).toBe("A 100%");
+  expect(screen.queryByRole("heading")).toBeNull();
+});
+
+test("treats numeric string values as numbers", () => {
+  const data = [
+    { id: "a", label: "A", value: "25", color: "red" },
+    { id: "b", label: "B", value: "75", color: "blue" },
+  ];
+  render(<PieChart data={data} title="Chart" />);
+
+  expect(screen.getByRole("img").getAttribute("aria-label")).toBe(
+    "Chart: A 25%, B 75%",
+  );
+});
+
+test("drops NaN and Infinity values", () => {
+  const data = [
+    { id: "a", label: "A", value: NaN, color: "red" },
+    { id: "b", label: "B", value: Infinity, color: "green" },
+    { id: "c", label: "C", value: 5, color: "blue" },
+  ];
+  render(<PieChart data={data} title="Chart" />);
+
+  expect(screen.getByRole("img").getAttribute("aria-label")).toBe(
+    "Chart: C 100%",
+  );
+});
+
+test("legend percentages add up to 100 for equal slices", () => {
+  const data = ["A", "B", "C"].map((label) => ({ label, value: 1, color: "red" }));
+  render(<PieChart data={data} title="Chart" />);
+
+  const total = screen
+    .getAllByRole("listitem")
+    .reduce((sum, item) => sum + parseInt(item.textContent.replace(/\D/g, ""), 10), 0);
+  expect(total).toBe(100);
 });

@@ -1,16 +1,27 @@
-import { buildGradient, formatPercent } from "../utils/pieChart";
+import { buildGradient, formatPercent, toPercents } from "../utils/pieChart";
 import "./PieChart.css";
 
-export const PieChart = ({ data, title }) => {
-  const slices = data.filter(({ value }) => value > 0);
-  const total = slices.reduce((sum, { value }) => sum + value, 0);
+export const PieChart = ({ data = [], title = "" }) => {
+  const valid = data
+    .map((slice) => ({ ...slice, value: Number(slice.value) }))
+    .filter(({ value }) => Number.isFinite(value) && value > 0);
+  const total = valid.reduce((sum, { value }) => sum + value, 0);
 
   if (total === 0) {
     return <p className="pie-chart-empty">No data to display.</p>;
   }
 
+  const percents = toPercents(
+    valid.map(({ value }) => value),
+    total,
+  );
+  const slices = valid.map((slice, index) => ({
+    ...slice,
+    percent: formatPercent(percents[index]),
+  }));
+
   const summary = slices
-    .map(({ label, value }) => `${label} ${formatPercent(value, total)}`)
+    .map(({ label, percent }) => `${label} ${percent}`)
     .join(", ");
 
   return (
@@ -18,17 +29,21 @@ export const PieChart = ({ data, title }) => {
       <div
         className="pie-chart-circle"
         role="img"
-        aria-label={`${title}: ${summary}`}
+        aria-label={title ? `${title}: ${summary}` : summary}
         style={{ background: buildGradient(slices, total) }}
       />
       <figcaption>
-        <h2 className="pie-chart-title">{title}</h2>
+        {title && <h2 className="pie-chart-title">{title}</h2>}
         <ul className="pie-chart-legend">
-          {slices.map(({ id, label, value, color }) => (
-            <li key={id}>
-              <span className="pie-chart-swatch" style={{ background: color }} />
+          {slices.map(({ id, label, color, percent }, index) => (
+            <li key={id ?? index}>
+              <span
+                className="pie-chart-swatch"
+                style={{ background: color }}
+                aria-hidden="true"
+              />
               <span className="pie-chart-label">{label}</span>
-              <span className="pie-chart-value">{formatPercent(value, total)}</span>
+              <span className="pie-chart-value">{percent}</span>
             </li>
           ))}
         </ul>
