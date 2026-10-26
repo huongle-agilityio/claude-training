@@ -61,6 +61,9 @@ export const HomePage = () => {
             <Link to={ROUTES.SORTABLE} className="counter nav-link">
               Go to Sortable List →
             </Link>
+            <Link to={ROUTES.PIE_CHART} className="counter nav-link">
+              Go to Pie Chart →
+            </Link>
             <button
               type="button"
               className="counter"
