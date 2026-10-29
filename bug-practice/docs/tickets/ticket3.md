@@ -1,6 +1,6 @@
 # T3 — Congratulate when the goal is reached
 
-Intent: intent/click-goal.md · Depends on: T1
+Intent: .claude/intent/click-goal.md · Depends on: T1 and T2 (the message sits under T2's progress bar). Start after both are merged.
 
 ## User story
 
@@ -17,7 +17,8 @@ It hides after 3 seconds, or immediately when the goal is no longer reached
 
 - AC1: Given the goal is 10 and the count is 9, When I click once,
   Then the message "Goal reached!" with a check icon appears inside the goal panel,
-  under the progress bar, and is announced to screen readers (role="status").
+  under the progress bar. It is rendered inside a role="status" region that is always
+  present in the goal panel and empty while no message is showing, so screen readers announce it.
 - AC2: Given the message is showing, When 3 seconds pass,
   Then the message disappears by itself (manual check: 3 s ± 0.5 s).
 - AC3: Given the goal is 10, the count is 10 and the message has already hidden,
@@ -41,6 +42,17 @@ It hides after 3 seconds, or immediately when the goal is no longer reached
 - AC11: Given the message is showing, When I click the counter,
   Then the timer does not restart; the message hides 3 s after it first appeared.
 - AC12: Given an invalid goal is submitted, Then the message does not appear or change.
+- AC13: Given the message is showing, When I switch to the History tab and back within 3 s,
+  Then the message is gone and does not show again until the goal is reached again
+  under the message rule.
+
+## Technical notes (agreed in zero-questions round 1)
+
+- The message is a new element inside `GoalPanel`, separate from the existing click message.
+- The existing click message stays where it is today (inline under Reset, HomePage.jsx). Do not move it.
+- When AC9 restarts the timer, the text does not change, so screen readers do not announce it again. Accepted.
+- Use the app's existing theme (light and dark) for the message and check icon;
+  the spec canvas colors are a sketch only.
 
 ## Scope / Non-scope
 
@@ -51,8 +63,11 @@ It hides after 3 seconds, or immediately when the goal is no longer reached
 ## Open questions
 
 - Message text → BA decided in spec: "Goal reached!" with a check icon, no emoji → answered
-- Where the message appears relative to the existing 2s click message (bottom-right)
-  → BA decided in spec: inside the goal panel under the progress bar, so they never overlap → answered
+- Where the message appears relative to the existing 2s click message
+  → BA decided: inside the goal panel under the progress bar; the click message stays inline
+  under Reset (corrected in dev round 1: it is not bottom-right) → answered
+- Dependency on T1/T2, tab switch, status region, look and theme
+  → BA decided (dev round 1, 2026-10-29): see header, AC1, AC13, Technical notes → answered
 - Message behavior on Reset / goal change / Clear goal / repeated Set goal / clicks while showing
   → BA decided (QA round, 2026-10-29): see Message rule, AC4, AC7–AC11 → answered
 - Timing tolerance for manual testing → BA decided: 3 s ± 0.5 s → answered
