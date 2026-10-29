@@ -37,6 +37,10 @@ Until T2 ships, the goal is checked through the "Goal: N" text (T1 AC2).
 | TC-55 | T1 AC13          | Error stays while typing and on Reset | Goal 10, error showing                                                                            | 1. Type "1" 2. Press Reset                  | Error still shown after each step.                                                                                                                            | UI     |
 | TC-56 | T1 notes         | Panel position                        | Counter tab                                                                                       | Inspect render order                        | `GoalPanel` is right after the click message and before `SantaRun`; not rendered on the History tab.                                                          | UI     |
 | TC-57 | T1 notes         | Error color contrast                  | Light and dark theme                                                                              | Check the `--error` token on its background | Contrast at least 4.5:1 in both themes.                                                                                                                       | manual |
+| TC-60 | T1 AC8           | Input is a numeric text field         | Fresh load                                                                                        | 1. Inspect the goal input                   | Input is a text field (role textbox, not type="number") with inputmode="numeric".                                                                             | UI     |
+| TC-61 | T1 AC12          | No aria error attrs when no error     | Fresh load; goal 10 set; error then "Clear goal"                                                  | Check the input in each state               | Neither aria-invalid nor aria-describedby is set in any state.                                                                                                | UI     |
+| TC-62 | T1 AC8           | Only end spaces are trimmed           | "   ", "1 0", " 1 0 "                                                                             | Call the validator with each value          | Returns null for every value.                                                                                                                                 | unit   |
+| TC-63 | T1 AC14          | Reset keeps the goal                  | Goal 10, count 3                                                                                  | 1. Press Reset                              | Count is 0. "Goal: 10" still shown. "Clear goal" visible.                                                                                                     | UI     |
 
 ## T2 — Progress
 
@@ -87,9 +91,9 @@ Until T2 ships, the goal is checked through the "Goal: N" text (T1 AC2).
 
 | Ticket | ACs      | Covered |
 | ------ | -------- | ------- |
-| T1     | AC1–AC13 | 13 / 13 |
+| T1     | AC1–AC14 | 14 / 14 |
 | T2     | AC1–AC10 | 10 / 10 |
 | T3     | AC1–AC13 | 13 / 13 |
 
-Total: 36 ACs, 59 test cases (47 UI, 7 unit, 5 manual). No blocked rows.
-IDs TC-01…TC-46 keep the QA draft numbering; TC-47…TC-52 were added after the QA round, TC-53…TC-54 after dev round 1, TC-55…TC-58 after dev round 3, TC-59 after dev round 4.
+Total: 37 ACs, 63 test cases (50 UI, 8 unit, 5 manual). No blocked rows.
+IDs TC-01…TC-46 keep the QA draft numbering; TC-47…TC-52 were added after the QA round, TC-53…TC-54 after dev round 1, TC-55…TC-58 after dev round 3, TC-59 after dev round 4, TC-60…TC-63 after the QA AC-coverage review.
