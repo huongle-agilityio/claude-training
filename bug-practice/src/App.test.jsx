@@ -140,3 +140,83 @@ test("Clicking the count button plays the santa animation", async () => {
   await userEvent.click(screen.getByRole("button", { name: /count is/i }));
   expect(screen.queryByTestId("santa-run")).not.toBeNull();
 });
+
+const submitGoal = async (text) => {
+  const input = screen.getByLabelText("Your goal");
+  await userEvent.clear(input);
+  await userEvent.type(input, text);
+  await userEvent.click(screen.getByRole("button", { name: "Set goal" }));
+};
+
+const clickCount = async (times) => {
+  for (let i = 0; i < times; i++) {
+    await userEvent.click(screen.getByRole("button", { name: /count is/i }));
+  }
+};
+
+test("T1 AC7: Clear goal does not change the count", async () => {
+  renderApp();
+  await submitGoal("10");
+  await clickCount(3);
+
+  await userEvent.click(screen.getByRole("button", { name: "Clear goal" }));
+
+  expect(screen.queryByText("Goal: 10")).toBeNull();
+  expect(screen.getByRole("button", { name: /count is/i }).textContent).toBe(
+    "Count is 3",
+  );
+});
+
+test("T1 AC11: goal and count survive a tab switch; input shows the goal and no error", async () => {
+  renderApp();
+  await submitGoal("10");
+  await clickCount(3);
+  await submitGoal("abc");
+  expect(screen.getByRole("alert")).not.toBeNull();
+
+  await userEvent.click(screen.getByRole("button", { name: "History" }));
+  await userEvent.click(screen.getByRole("button", { name: "Counter" }));
+
+  expect(screen.getByText("Goal: 10")).not.toBeNull();
+  expect(screen.getByRole("button", { name: /count is/i }).textContent).toBe(
+    "Count is 3",
+  );
+  expect(screen.getByLabelText("Your goal").value).toBe("10");
+  expect(screen.queryByRole("alert")).toBeNull();
+});
+
+test("T1 AC13: Reset keeps the error and the goal", async () => {
+  renderApp();
+  await submitGoal("10");
+  await clickCount(2);
+  await submitGoal("0");
+
+  await userEvent.click(screen.getByRole("button", { name: /reset/i }));
+
+  expect(screen.getByRole("alert").textContent).toBe(
+    "Enter a whole number from 1 to 999",
+  );
+  expect(screen.getByText("Goal: 10")).not.toBeNull();
+});
+
+test("T1: goal panel sits after the click message and before SantaRun, Counter tab only", async () => {
+  vi.useFakeTimers({ shouldAdvanceTime: true });
+  const user = userEvent.setup({
+    advanceTimers: vi.advanceTimersByTime.bind(vi),
+  });
+
+  renderApp();
+  await user.click(screen.getByRole("button", { name: /count is/i }));
+  await act(async () => {
+    vi.advanceTimersByTime(2000);
+  });
+
+  const panel = screen.getByLabelText("Your goal").closest("form");
+  expect(panel.previousElementSibling).toBe(
+    screen.getByText(/you clicked 1 time/i),
+  );
+  expect(panel.nextElementSibling).toBe(screen.getByTestId("santa-run"));
+
+  await user.click(screen.getByRole("button", { name: "History" }));
+  expect(screen.queryByLabelText("Your goal")).toBeNull();
+});
