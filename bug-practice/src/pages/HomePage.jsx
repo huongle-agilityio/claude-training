@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { Link } from "react-router";
 import heroImg from "../assets/hero.png";
 import reactLogo from "../assets/react.svg";
@@ -16,14 +16,13 @@ export const HomePage = () => {
 
   const message = useClickMessage(count);
 
-  const handleCount = useCallback(
-    () => setCount((prev) => prev + 1),
-    [],
-  );
+  const handleCount = () => setCount((prev) => prev + 1);
 
-  const handleReset = useCallback(() => setCount(0), []);
+  const handleReset = () => setCount(0);
 
-  const handleClearGoal = useCallback(() => setGoal(null), []);
+  const handleSetGoal = (value) => setGoal(value);
+
+  const handleClearGoal = () => setGoal(null);
 
   return (
     <>
@@ -82,7 +81,7 @@ export const HomePage = () => {
             {message && <p>{message}</p>}
             <GoalPanel
               goal={goal}
-              onSetGoal={setGoal}
+              onSetGoal={handleSetGoal}
               onClearGoal={handleClearGoal}
             />
             <SantaRun runId={count} />

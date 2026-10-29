@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
-import { parseGoal } from "../utils/goal";
+import { MAX_GOAL, MIN_GOAL, parseGoal } from "../utils/goal";
 
-const ERROR_TEXT = "Enter a whole number from 1 to 999";
+const ERROR_TEXT = `Enter a whole number from ${MIN_GOAL} to ${MAX_GOAL}`;
 
 // The goal lives in the parent; the input text and error are local, so a
 // remount (tab switch) starts from the current goal with no error.
@@ -37,7 +37,7 @@ export const GoalPanel = ({ goal, onSetGoal, onClearGoal }) => {
           id="goal-input"
           type="text"
           inputMode="numeric"
-          placeholder="1–999"
+          placeholder={`${MIN_GOAL}–${MAX_GOAL}`}
           value={text}
           onChange={(event) => setText(event.target.value)}
           aria-invalid={hasError ? "true" : undefined}
