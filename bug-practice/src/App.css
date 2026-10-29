@@ -17,6 +17,10 @@
   }
 }
 
+.goal-error {
+  color: var(--error);
+}
+
 .hero {
   position: relative;
 

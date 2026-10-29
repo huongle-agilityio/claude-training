@@ -6,11 +6,13 @@ import viteLogo from "../assets/vite.svg";
 import { useClickMessage } from "../hooks/useClickMessage";
 import { ClickHistory } from "../components/ClickHistory";
 import { SantaRun } from "../components/SantaRun";
+import { GoalPanel } from "../components/GoalPanel";
 import { ROUTES } from "../constants/routes";
 
 export const HomePage = () => {
   const [count, setCount] = useState(0);
   const [screen, setScreen] = useState("counter");
+  const [goal, setGoal] = useState(null);
 
   const message = useClickMessage(count);
 
@@ -20,6 +22,10 @@ export const HomePage = () => {
   );
 
   const handleReset = useCallback(() => setCount(0), []);
+
+  const handleSetGoal = (value) => setGoal(value);
+
+  const handleClearGoal = () => setGoal(null);
 
   return (
     <>
@@ -76,6 +82,11 @@ export const HomePage = () => {
               Reset
             </button>
             {message && <p>{message}</p>}
+            <GoalPanel
+              goal={goal}
+              onSetGoal={handleSetGoal}
+              onClearGoal={handleClearGoal}
+            />
             <SantaRun runId={count} />
           </>
         )}
