@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "react-router";
 import heroImg from "../assets/hero.png";
 import reactLogo from "../assets/react.svg";
@@ -16,9 +16,12 @@ export const HomePage = () => {
 
   const message = useClickMessage(count);
 
-  const handleCount = () => setCount((prev) => prev + 1);
+  const handleCount = useCallback(
+    () => setCount((prev) => prev + 1),
+    [],
+  );
 
-  const handleReset = () => setCount(0);
+  const handleReset = useCallback(() => setCount(0), []);
 
   const handleSetGoal = (value) => setGoal(value);
 

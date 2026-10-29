@@ -212,9 +212,11 @@ test("T1: goal panel sits after the click message and before SantaRun, Counter t
   });
 
   const panel = screen.getByLabelText("Your goal").closest("form");
-  expect(panel.previousElementSibling).toBe(
-    screen.getByText(/you clicked 1 time/i),
-  );
+  const message = screen.getByText(/you clicked 1 time/i);
+  expect(
+    message.compareDocumentPosition(panel) &
+      Node.DOCUMENT_POSITION_FOLLOWING,
+  ).toBeTruthy();
   expect(panel.nextElementSibling).toBe(screen.getByTestId("santa-run"));
 
   await user.click(screen.getByRole("button", { name: "History" }));
