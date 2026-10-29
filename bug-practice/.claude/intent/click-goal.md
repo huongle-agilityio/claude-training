@@ -1,6 +1,6 @@
 # Intent: click goal
 
-Author: Huong Le (from client brief, Day 12). Status: ready for review.
+Author: Huong Le (from client brief, Day 12). Status: approved.
 Source: client brief + Q&A rounds 1–2 (2026-10-28).
 
 ## Problem
@@ -19,22 +19,19 @@ and get a short congratulation when they reach it.
 - The goal is not tied to a day; it stays until the user changes it.
 - After reaching the goal, counting continues; the goal stays the same.
 - Progress shows as "x / goal" plus a progress bar. No percentage.
+- Above the goal: show the real numbers (e.g. "12 / 10"); the bar stays full.
 - Goal must be a whole number from 1 to 999.
-  Invalid input -> error shown next to the input, previous goal kept.
+  Invalid input (empty, 0, negative, decimals, > 999, non-numbers)
+  -> error shown next to the input, previous goal kept.
 - The goal can be changed at any time. Progress still uses the current total.
   If the new goal <= current clicks, it counts as reached immediately.
-- Reset keeps the goal; progress goes back to "0 / goal".
-- The congratulation shows again every time the goal is reached after a reset.
-
-## Rules (proposed by us, waiting for client confirmation)
-
-- Congratulation message shows for 3 seconds, then hides by itself.
-- It shows only at the moment the goal is reached (including when a new goal
-  is already reached on set). Clicking past the goal does not show it again.
-- A "Clear goal" button removes the goal and returns to the no-goal state.
 - No goal set: show only the goal input and a "Set goal" button, no progress bar.
-- Above the goal: show the real numbers (e.g. "12 / 10"); the bar stays full.
-- Invalid input covers: empty, 0, negative, decimals, > 999, non-numbers.
+- A "Clear goal" button removes the goal and returns to the no-goal state.
+- Reset keeps the goal; progress goes back to "0 / goal".
+- Congratulation message shows for 3 seconds, then hides by itself.
+- It shows only at the moment the goal is reached: when a click reaches it,
+  when a new goal is already reached on set, and again every time the goal
+  is reached after a reset. Clicking past the goal does not show it again.
 
 ## Affected users and systems
 
@@ -50,4 +47,4 @@ and get a short congratulation when they reach it.
 
 ## Open questions
 
-- [ ] Client to confirm the proposed rules above.
+- None. All rules confirmed by client (rounds 1–2, 2026-10-28).
