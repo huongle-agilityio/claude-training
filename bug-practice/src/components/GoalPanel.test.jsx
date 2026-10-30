@@ -233,6 +233,7 @@ test("T2 AC9: progressbar is named 'Goal progress' with min/max/now/valuetext", 
   expect(bar.getAttribute("aria-valuemax")).toBe("10");
   expect(bar.getAttribute("aria-valuenow")).toBe("7");
   expect(bar.getAttribute("aria-valuetext")).toBe("7 / 10");
+  expect(bar.firstElementChild.style.width).toBe("70%");
   expect(screen.getByText("7 / 10").closest("[aria-hidden]")).toBeNull();
 });
 

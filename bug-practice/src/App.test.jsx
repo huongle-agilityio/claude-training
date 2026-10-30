@@ -161,7 +161,8 @@ test("T1 AC7: Clear goal does not change the count", async () => {
 
   await userEvent.click(screen.getByRole("button", { name: "Clear goal" }));
 
-  expect(screen.queryByText("3 / 10")).toBeNull();
+  expect(screen.queryByText(/^\d+ \/ \d+$/)).toBeNull();
+  expect(screen.queryByRole("progressbar")).toBeNull();
   expect(screen.getByRole("button", { name: /count is/i }).textContent).toBe(
     "Count is 3",
   );
