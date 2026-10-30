@@ -9,3 +9,7 @@ export const parseGoal = (text) => {
   const value = Number(trimmed);
   return value >= MIN_GOAL && value <= MAX_GOAL ? value : null;
 };
+
+// Share of the goal reached, from 0 to 1. Capped at 1 so the bar stays full
+// (and inside its frame) once the count passes the goal.
+export const getProgress = (count, goal) => Math.min(count / goal, 1);

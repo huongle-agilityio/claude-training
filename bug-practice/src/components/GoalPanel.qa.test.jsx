@@ -23,7 +23,7 @@ const goalInput = () => screen.getByRole("textbox", { name: "Your goal" });
 const setGoalButton = () => screen.getByRole("button", { name: "Set goal" });
 const queryClearGoal = () => screen.queryByRole("button", { name: "Clear goal" });
 const countButton = () => screen.getByRole("button", { name: /count is/i });
-const queryGoalText = () => screen.queryByText(/^Goal: \d+$/);
+const queryGoalText = () => screen.queryByText(/^\d+ \/ \d+$/);
 const queryError = () => screen.queryByText(ERROR);
 
 const submitGoal = async (user, value) => {
@@ -72,12 +72,12 @@ test("TC-T1-01: initial no-goal state shows the empty goal form only", () => {
   expectNoGoal();
 });
 
-test("TC-T1-02: setting a valid goal shows 'Goal: 10' and 'Clear goal'", async () => {
+test("TC-T1-02: setting a valid goal shows '0 / 10' and 'Clear goal'", async () => {
   const user = renderApp();
 
   await submitGoal(user, "10");
 
-  expect(screen.getByText("Goal: 10")).not.toBeNull();
+  expect(screen.getByText("0 / 10")).not.toBeNull();
   expect(queryClearGoal()).not.toBeNull();
   expectNoError();
 });
@@ -88,8 +88,8 @@ test("TC-T1-03: changing an existing goal updates the text", async () => {
 
   await submitGoal(user, "20");
 
-  expect(screen.getByText("Goal: 20")).not.toBeNull();
-  expect(screen.queryByText("Goal: 10")).toBeNull();
+  expect(screen.getByText("0 / 20")).not.toBeNull();
+  expect(screen.queryByText("0 / 10")).toBeNull();
 });
 
 test("TC-T1-04: submitting empty shows an accessible error and keeps the goal", async () => {
@@ -105,7 +105,7 @@ test("TC-T1-04: submitting empty shows an accessible error and keeps the goal", 
   expect(describedBy).toBeTruthy();
   expect(error.id).toBeTruthy();
   expect(describedBy.split(/\s+/)).toContain(error.id);
-  expect(screen.getByText("Goal: 10")).not.toBeNull();
+  expect(screen.getByText("0 / 10")).not.toBeNull();
 });
 
 test.each([
@@ -113,14 +113,14 @@ test.each([
   ["TC-T1-06", "-5"],
   ["TC-T1-08", "1000"],
   ["TC-T1-09", "abc"],
-])("%s: submitting %j shows the error and keeps 'Goal: 10'", async (_id, value) => {
+])("%s: submitting %j shows the error and keeps '0 / 10'", async (_id, value) => {
   const user = renderApp();
   await submitGoal(user, "10");
 
   await submitGoal(user, value);
 
   expectErrorShown();
-  expect(screen.getByText("Goal: 10")).not.toBeNull();
+  expect(screen.getByText("0 / 10")).not.toBeNull();
 });
 
 test("TC-T1-07: submitting '2.5' shows the error, keeps the goal and the typed text", async () => {
@@ -130,7 +130,7 @@ test("TC-T1-07: submitting '2.5' shows the error, keeps the goal and the typed t
   await submitGoal(user, "2.5");
 
   expectErrorShown();
-  expect(screen.getByText("Goal: 10")).not.toBeNull();
+  expect(screen.getByText("0 / 10")).not.toBeNull();
   expect(goalInput().value).toBe("2.5");
 });
 
@@ -139,7 +139,7 @@ test("TC-T1-11: lower boundary 1 is accepted", async () => {
 
   await submitGoal(user, "1");
 
-  expect(screen.getByText("Goal: 1")).not.toBeNull();
+  expect(screen.getByText("0 / 1")).not.toBeNull();
   expect(queryError()).toBeNull();
   expect(queryClearGoal()).not.toBeNull();
 });
@@ -149,7 +149,7 @@ test("TC-T1-12: upper boundary 999 is accepted", async () => {
 
   await submitGoal(user, "999");
 
-  expect(screen.getByText("Goal: 999")).not.toBeNull();
+  expect(screen.getByText("0 / 999")).not.toBeNull();
   expect(queryError()).toBeNull();
 });
 
@@ -162,7 +162,7 @@ test("TC-T1-13: a valid submit clears the error", async () => {
   await submitGoal(user, "15");
 
   expectNoError();
-  expect(screen.getByText("Goal: 15")).not.toBeNull();
+  expect(screen.getByText("0 / 15")).not.toBeNull();
 });
 
 test("TC-T1-14: 'Clear goal' resets the goal, input and error, focuses the input, keeps the count", async () => {
@@ -198,7 +198,7 @@ test("TC-T1-16: setting the same goal twice keeps a single goal", async () => {
 
   await submitGoal(user, "10");
 
-  expect(screen.getByText("Goal: 10")).not.toBeNull();
+  expect(screen.getByText("3 / 10")).not.toBeNull();
   expect(queryError()).toBeNull();
   expect(screen.getAllByRole("button", { name: "Clear goal" })).toHaveLength(1);
 });
@@ -208,7 +208,7 @@ test("TC-T1-47: surrounding spaces and leading zeros are accepted as 10", async 
 
   for (const value of [" 10 ", "010", "0010"]) {
     await submitGoal(user, value);
-    expect(screen.getByText("Goal: 10")).not.toBeNull();
+    expect(screen.getByText("0 / 10")).not.toBeNull();
     expect(queryError()).toBeNull();
   }
 });
@@ -220,7 +220,7 @@ test("TC-T1-48: '+5', '1e2' and '10.0' are rejected", async () => {
   for (const value of ["+5", "1e2", "10.0"]) {
     await submitGoal(user, value);
     expectErrorShown();
-    expect(screen.getByText("Goal: 10")).not.toBeNull();
+    expect(screen.getByText("0 / 10")).not.toBeNull();
   }
 });
 
@@ -229,7 +229,7 @@ test("TC-T1-49: pressing Enter submits the goal", async () => {
 
   await user.type(goalInput(), "12{Enter}");
 
-  expect(screen.getByText("Goal: 12")).not.toBeNull();
+  expect(screen.getByText("0 / 12")).not.toBeNull();
 });
 
 test("TC-T1-50: the input keeps its value after Set goal", async () => {
@@ -283,6 +283,6 @@ test("TC-T1-63: Reset changes only the count, never the goal", async () => {
   await user.click(screen.getByRole("button", { name: /reset/i }));
 
   expect(countButton().textContent).toMatch("Count is 0");
-  expect(screen.getByText("Goal: 10")).not.toBeNull();
+  expect(screen.getByText("0 / 10")).not.toBeNull();
   expect(queryClearGoal()).not.toBeNull();
 });

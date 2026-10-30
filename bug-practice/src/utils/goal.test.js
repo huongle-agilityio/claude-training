@@ -1,5 +1,5 @@
 import { test, expect } from "vitest";
-import { parseGoal } from "./goal";
+import { getProgress, parseGoal } from "./goal";
 
 test.each([
   ["1", 1],
@@ -18,3 +18,14 @@ test.each(["", "   ", "0", "-5", "2.5", "1000", "abc", "+5", "1e2", "10.0"])(
     expect(parseGoal(input)).toBeNull();
   },
 );
+
+test.each([
+  [0, 10, 0],
+  [7, 10, 0.7],
+  [10, 10, 1],
+  [12, 10, 1],
+  [15, 10, 1],
+  [999, 999, 1],
+])("getProgress(%i, %i) returns %s, never above 1", (count, goal, expected) => {
+  expect(getProgress(count, goal)).toBe(expected);
+});

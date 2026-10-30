@@ -84,6 +84,7 @@ export const HomePage = () => {
             {message && <p>{message}</p>}
             <GoalPanel
               goal={goal}
+              count={count}
               onSetGoal={handleSetGoal}
               onClearGoal={handleClearGoal}
             />
