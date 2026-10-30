@@ -161,7 +161,7 @@ test("T1 AC7: Clear goal does not change the count", async () => {
 
   await userEvent.click(screen.getByRole("button", { name: "Clear goal" }));
 
-  expect(screen.queryByText("Goal: 10")).toBeNull();
+  expect(screen.queryByText("3 / 10")).toBeNull();
   expect(screen.getByRole("button", { name: /count is/i }).textContent).toBe(
     "Count is 3",
   );
@@ -177,7 +177,7 @@ test("T1 AC11: goal and count survive a tab switch; input shows the goal and no 
   await userEvent.click(screen.getByRole("button", { name: "History" }));
   await userEvent.click(screen.getByRole("button", { name: "Counter" }));
 
-  expect(screen.getByText("Goal: 10")).not.toBeNull();
+  expect(screen.getByText("3 / 10")).not.toBeNull();
   expect(screen.getByRole("button", { name: /count is/i }).textContent).toBe(
     "Count is 3",
   );
@@ -196,7 +196,7 @@ test("T1 AC13: Reset keeps the error and the goal", async () => {
   expect(screen.getByRole("alert").textContent).toBe(
     "Enter a whole number from 1 to 999",
   );
-  expect(screen.getByText("Goal: 10")).not.toBeNull();
+  expect(screen.getByText("0 / 10")).not.toBeNull();
 });
 
 test("T1: goal panel sits after the click message and before SantaRun, Counter tab only", async () => {
@@ -221,4 +221,71 @@ test("T1: goal panel sits after the click message and before SantaRun, Counter t
 
   await user.click(screen.getByRole("button", { name: "History" }));
   expect(screen.queryByLabelText("Your goal")).toBeNull();
+});
+
+const getGoalBar = () =>
+  screen.getByRole("progressbar", { name: "Goal progress" });
+
+test("T2 AC2: 7 clicks with goal 10 show '7 / 10' and a 70% bar", async () => {
+  renderApp();
+  await submitGoal("10");
+
+  await clickCount(7);
+
+  expect(screen.getByText("7 / 10")).not.toBeNull();
+  expect(getGoalBar().getAttribute("aria-valuenow")).toBe("7");
+  expect(getGoalBar().getAttribute("aria-valuemax")).toBe("10");
+});
+
+test("T2 AC4: Reset at 7 / 10 shows '0 / 10', empty bar, goal kept", async () => {
+  renderApp();
+  await submitGoal("10");
+  await clickCount(7);
+
+  await userEvent.click(screen.getByRole("button", { name: /reset/i }));
+
+  expect(screen.getByText("0 / 10")).not.toBeNull();
+  expect(getGoalBar().getAttribute("aria-valuenow")).toBe("0");
+  expect(getGoalBar().getAttribute("aria-valuemax")).toBe("10");
+  expect(screen.getByRole("button", { name: "Clear goal" })).not.toBeNull();
+});
+
+test("T2 AC5: setting goal 10 at count 15 shows '15 / 10' and a full bar", async () => {
+  renderApp();
+  await clickCount(15);
+
+  await submitGoal("10");
+
+  expect(screen.getByText("15 / 10")).not.toBeNull();
+  expect(getGoalBar().getAttribute("aria-valuenow")).toBe("10");
+  expect(getGoalBar().getAttribute("aria-valuemax")).toBe("10");
+});
+
+test("T2 AC7: no progress on load, after Clear goal, after Reset with no goal", async () => {
+  const expectNoProgress = () => {
+    expect(screen.queryByRole("progressbar")).toBeNull();
+    expect(screen.queryByText(/^\d+ \/ \d+$/)).toBeNull();
+  };
+  renderApp();
+  expectNoProgress();
+
+  await submitGoal("10");
+  await clickCount(2);
+  await userEvent.click(screen.getByRole("button", { name: "Clear goal" }));
+  expectNoProgress();
+
+  await userEvent.click(screen.getByRole("button", { name: /reset/i }));
+  expectNoProgress();
+});
+
+test("T2 AC8: changing goal 10 → 20 at count 7 shows '7 / 20' and a 35% bar", async () => {
+  renderApp();
+  await submitGoal("10");
+  await clickCount(7);
+
+  await submitGoal("20");
+
+  expect(screen.getByText("7 / 20")).not.toBeNull();
+  expect(getGoalBar().getAttribute("aria-valuenow")).toBe("7");
+  expect(getGoalBar().getAttribute("aria-valuemax")).toBe("20");
 });

@@ -48,7 +48,7 @@ test("TC-T1-53: the goal survives a tab switch, the error does not", async () =>
   await switchTab(user, /history/i);
   await switchTab(user, /counter/i);
 
-  expect(screen.getByText("Goal: 10")).not.toBeNull();
+  expect(screen.getByText("3 / 10")).not.toBeNull();
   expect(screen.getByRole("button", { name: /count is/i }).textContent).toMatch(
     "Count is 3",
   );
