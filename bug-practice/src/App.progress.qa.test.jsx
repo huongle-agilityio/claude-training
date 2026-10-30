@@ -150,6 +150,29 @@ test("TC-26: changing goal 10 to 20 at count 7 shows '7 / 20' and a 35% bar", as
   expectProgress(7, 20);
 });
 
+test("TC-64: inside the goal panel the order is text → progressbar → 'Clear goal'", async () => {
+  const user = renderApp();
+  await setGoal(user, "10");
+  await clickCount(user, 3);
+
+  const panel = goalPanel();
+  const text = within(panel).getByText("3 / 10");
+  const bar = within(panel).getByRole("progressbar", { name: "Goal progress" });
+  const clear = within(panel).getByRole("button", { name: "Clear goal" });
+  const FOLLOWING = Node.DOCUMENT_POSITION_FOLLOWING;
+  expect(text.compareDocumentPosition(bar) & FOLLOWING).toBeTruthy();
+  expect(bar.compareDocumentPosition(clear) & FOLLOWING).toBeTruthy();
+});
+
+test("TC-65: the '3 / 10' text is not aria-hidden", async () => {
+  const user = renderApp();
+  await setGoal(user, "10");
+  await clickCount(user, 3);
+
+  const text = screen.getByText("3 / 10");
+  expect(text.closest('[aria-hidden="true"]')).toBeNull();
+});
+
 test("TC-27: goal 1 goes from '0 / 1' (empty) to '1 / 1' (full) on one click", async () => {
   const user = renderApp();
   await setGoal(user, "1");
