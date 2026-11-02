@@ -12,7 +12,7 @@ const renderPanel = (props) =>
     <GoalPanel onSetGoal={vi.fn()} onClearGoal={vi.fn()} {...props} />,
   );
 
-test("TC-28: goal 999 goes from '998 / 999' to '999 / 999' on one increment", () => {
+test("TC-28: goal 999 shows '998 / 999' at count 998 and '999 / 999' (full bar) at count 999", () => {
   const { rerender } = renderPanel({ goal: 999, count: 998 });
 
   expect(screen.getByText("998 / 999")).not.toBeNull();

@@ -20,9 +20,7 @@ afterEach(() => {
 });
 
 const switchTab = async (user, name) => {
-  const tab =
-    screen.queryByRole("tab", { name }) ?? screen.getByRole("button", { name });
-  await user.click(tab);
+  await user.click(screen.getByRole("button", { name }));
 };
 
 const setGoal = async (user, value) => {
@@ -45,11 +43,11 @@ test("TC-T1-53: the goal survives a tab switch, the error does not", async () =>
     "Enter a whole number from 1 to 999",
   );
 
-  await switchTab(user, /history/i);
-  await switchTab(user, /counter/i);
+  await switchTab(user, "History");
+  await switchTab(user, "Counter");
 
   expect(screen.getByText("3 / 10")).not.toBeNull();
-  expect(screen.getByRole("button", { name: /count is/i }).textContent).toMatch(
+  expect(screen.getByRole("button", { name: /count is/i }).textContent).toBe(
     "Count is 3",
   );
   const input = screen.getByRole("textbox", { name: "Your goal" });
@@ -77,6 +75,6 @@ test("TC-T1-56: the goal panel sits after the click message and before SantaRun,
   expect(message.compareDocumentPosition(goalInput) & FOLLOWING).toBeTruthy();
   expect(goalInput.compareDocumentPosition(santa) & FOLLOWING).toBeTruthy();
 
-  await switchTab(user, /history/i);
+  await switchTab(user, "History");
   expect(screen.queryByRole("textbox", { name: "Your goal" })).toBeNull();
 });
