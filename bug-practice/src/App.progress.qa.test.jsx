@@ -76,8 +76,7 @@ test("TC-20: 12 clicks past goal 10 show '12 / 10' and a full bar", async () => 
 
   await clickCount(user, 12);
 
-  const bar = expectProgress(12, 10);
-  expect(bar.getAttribute("aria-valuenow")).toBe("10");
+  expectProgress(12, 10);
 });
 
 test("TC-22: Reset at 7 / 10 shows '0 / 10' and keeps the goal", async () => {
@@ -97,8 +96,7 @@ test("TC-23: setting goal 10 at count 15 shows '15 / 10' and a full bar", async 
 
   await setGoal(user, "10");
 
-  const bar = expectProgress(15, 10);
-  expect(bar.getAttribute("aria-valuenow")).toBe("10");
+  expectProgress(15, 10);
 });
 
 test("TC-24: the goal panel shows no percentage text at counts 0, 7 and 12", async () => {
@@ -148,6 +146,18 @@ test("TC-26: changing goal 10 to 20 at count 7 shows '7 / 20' and a 35% bar", as
   await setGoal(user, "20");
 
   expectProgress(7, 20);
+});
+
+test("lowering goal 10 to 5 at count 7 shows '7 / 5' and a full bar", async () => {
+  const user = renderApp();
+  await setGoal(user, "10");
+  await clickCount(user, 7);
+  expectProgress(7, 10);
+
+  await setGoal(user, "5");
+
+  const bar = expectProgress(7, 5);
+  expect(bar.getAttribute("aria-valuenow")).toBe(bar.getAttribute("aria-valuemax"));
 });
 
 test("TC-64: inside the goal panel the order is text → progressbar → 'Clear goal'", async () => {

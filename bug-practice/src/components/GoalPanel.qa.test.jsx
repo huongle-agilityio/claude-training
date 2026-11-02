@@ -50,6 +50,13 @@ const expectErrorShown = () => {
   expect(
     input.compareDocumentPosition(error) & Node.DOCUMENT_POSITION_FOLLOWING,
   ).toBeTruthy();
+  // When a goal exists, the error sits above the progress bar
+  const bar = screen.queryByRole("progressbar");
+  if (bar) {
+    expect(
+      error.compareDocumentPosition(bar) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  }
   return error;
 };
 
@@ -113,6 +120,7 @@ test.each([
   ["TC-T1-06", "-5"],
   ["TC-T1-08", "1000"],
   ["TC-T1-09", "abc"],
+  ["TC-62 (UI)", "   "],
 ])("%s: submitting %j shows the error and keeps '0 / 10'", async (_id, value) => {
   const user = renderApp();
   await submitGoal(user, "10");
@@ -178,7 +186,19 @@ test("TC-T1-14: 'Clear goal' resets the goal, input and error, focuses the input
   expect(goalInput().value).toBe("");
   expectNoError();
   expect(document.activeElement).toBe(goalInput());
-  expect(countButton().textContent).toMatch("Count is 3");
+  expect(countButton().textContent).toBe("Count is 3");
+});
+
+test("setting 5 after clearing goal 10 shows '0 / 5'", async () => {
+  const user = renderApp();
+  await submitGoal(user, "10");
+  await user.click(screen.getByRole("button", { name: "Clear goal" }));
+
+  await submitGoal(user, "5");
+
+  expect(screen.getByText("0 / 5")).not.toBeNull();
+  expect(screen.queryByText("0 / 10")).toBeNull();
+  expectNoError();
 });
 
 test("TC-T1-15: an invalid submit with no goal shows the error and sets no goal", async () => {
@@ -203,15 +223,17 @@ test("TC-T1-16: setting the same goal twice keeps a single goal", async () => {
   expect(screen.getAllByRole("button", { name: "Clear goal" })).toHaveLength(1);
 });
 
-test("TC-T1-47: surrounding spaces and leading zeros are accepted as 10", async () => {
-  const user = renderApp();
+test.each([" 10 ", "010", "0010"])(
+  "TC-T1-47: %j is accepted as goal 10",
+  async (value) => {
+    const user = renderApp();
 
-  for (const value of [" 10 ", "010", "0010"]) {
     await submitGoal(user, value);
+
     expect(screen.getByText("0 / 10")).not.toBeNull();
     expect(queryError()).toBeNull();
-  }
-});
+  },
+);
 
 test("TC-T1-48: '+5', '1e2' and '10.0' are rejected", async () => {
   const user = renderApp();
@@ -230,6 +252,15 @@ test("TC-T1-49: pressing Enter submits the goal", async () => {
   await user.type(goalInput(), "12{Enter}");
 
   expect(screen.getByText("0 / 12")).not.toBeNull();
+});
+
+test("pressing Enter on '0' shows the error and sets no goal", async () => {
+  const user = renderApp();
+
+  await user.type(goalInput(), "0{Enter}");
+
+  expectErrorShown();
+  expectNoGoal();
 });
 
 test("TC-T1-50: the input keeps its value after Set goal", async () => {
@@ -282,7 +313,7 @@ test("TC-T1-63: Reset changes only the count, never the goal", async () => {
 
   await user.click(screen.getByRole("button", { name: /reset/i }));
 
-  expect(countButton().textContent).toMatch("Count is 0");
+  expect(countButton().textContent).toBe("Count is 0");
   expect(screen.getByText("0 / 10")).not.toBeNull();
   expect(queryClearGoal()).not.toBeNull();
 });
