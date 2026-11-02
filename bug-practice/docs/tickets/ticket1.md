@@ -40,7 +40,7 @@ As a user, I want to set a target number of clicks so that I have something to w
 - AC13: Given an error is showing, When I type in the input or press Reset,
   Then the error stays. Only a valid submit (AC6) or "Clear goal" (AC7) removes it.
 - AC14: Given the goal is 10 and the count is 3, When I press Reset,
-  Then the count is 0, "Goal: 10" is still shown and "Clear goal" is still visible.
+  Then the count is 0, "0 / 10" is shown and "Clear goal" is still visible.
   Reset changes only the count, never the goal.
 
 ## Technical notes (agreed in zero-questions rounds 1 and 3)

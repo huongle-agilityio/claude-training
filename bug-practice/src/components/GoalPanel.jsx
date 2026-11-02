@@ -10,11 +10,16 @@ export const GoalPanel = ({ goal, count = 0, onSetGoal, onClearGoal }) => {
   const [hasError, setHasError] = useState(false);
   const inputRef = useRef(null);
 
-  // Progress values, each computed once. The bar and aria-valuenow stop at the
-  // goal; the text keeps the real count (e.g. "12 / 10").
-  const reached = Math.min(count, goal);
-  const progressText = `${count} / ${goal}`;
-  const fillWidth = `${getProgress(count, goal) * 100}%`;
+  // Progress values, computed only when a goal exists. The bar and
+  // aria-valuenow stop at the goal; the text keeps the real count ("12 / 10").
+  const progress =
+    goal === null
+      ? null
+      : {
+          reached: Math.min(count, goal),
+          text: `${count} / ${goal}`,
+          fillWidth: `${getProgress(count, goal) * 100}%`,
+        };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -58,19 +63,22 @@ export const GoalPanel = ({ goal, count = 0, onSetGoal, onClearGoal }) => {
           {ERROR_TEXT}
         </p>
       )}
-      {goal !== null && (
+      {progress !== null && (
         <>
-          <p className="goal-progress-text">{progressText}</p>
+          <p className="goal-progress-text">{progress.text}</p>
           <div
             className="goal-progress"
             role="progressbar"
             aria-label="Goal progress"
             aria-valuemin="0"
             aria-valuemax={goal}
-            aria-valuenow={reached}
-            aria-valuetext={progressText}
+            aria-valuenow={progress.reached}
+            aria-valuetext={progress.text}
           >
-            <div className="goal-progress-fill" style={{ width: fillWidth }} />
+            <div
+              className="goal-progress-fill"
+              style={{ width: progress.fillWidth }}
+            />
           </div>
           <button type="button" className="counter" onClick={handleClear}>
             Clear goal
