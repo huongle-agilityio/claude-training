@@ -36,7 +36,7 @@ Plain JavaScript/JSX only (no TypeScript). ESLint enforces `react-hooks` and `re
 ## Conventions
 
 - Create unit test and run after coding
-- Each commit follow these structure "fix:...", "feature:...", "chore:..."
+- Each commit follow these structure "fix:...", "feature:...", "chore:...", "test:...", "docs:..."
 - Put components in src/components
 
 ## Never do
